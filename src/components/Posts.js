@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchPosts } from '../actions/postActions';
 
 export class Posts extends Component {
-    componentWillMount(){
+    componentDidMount(){
         this.props.fetchPosts();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps) {
+            this.props.posts.unshift(nextProps.newPost)
+        }
     }
 
     containerStyle = () => {
@@ -34,8 +41,15 @@ export class Posts extends Component {
   }
 }
 
+Posts.propTypes = {
+    fetchPosts: propTypes.func.isRequired,
+    posts: propTypes.array.isRequired,
+    newPost: propTypes.object
+}
+
 const mapStateToProps = state => ({
-    posts: state.posts.items
+    posts: state.posts.items,
+    newPost: state.posts.item
 })
 
 export default connect(mapStateToProps, {fetchPosts})(Posts);
